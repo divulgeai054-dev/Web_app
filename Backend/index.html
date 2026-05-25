@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        Dental Segmentation
+    </title>
+
+</head>
+
+<body>
+
+    <h2>
+        Upload Dental Image
+    </h2>
+
+    <input
+        type="file"
+        id="fileInput"
+    >
+
+    <button onclick="uploadImage()">
+        Predict
+    </button>
+
+    <br><br>
+
+    <!-- DOWNLOAD BUTTON -->
+
+    <a
+        id="downloadBtn"
+        href="http://127.0.0.1:8000/download-report"
+        download="Dental_Report.pdf"
+        style="display:none;"
+    >
+
+        <button>
+            Download PDF Report
+        </button>
+
+    </a>
+
+    <h3>
+        Original Image
+    </h3>
+
+    <img
+        id="original"
+        width="300"
+    >
+
+    <h3>
+        Preprocessed Image
+    </h3>
+
+    <img
+        id="processed"
+        width="300"
+    >
+
+    <h3>
+        Segmented Image
+    </h3>
+
+    <img
+        id="segmented"
+        width="300"
+    >
+
+    <script>
+
+        async function uploadImage() {
+
+            const fileInput =
+
+                document.getElementById(
+                    "fileInput"
+                )
+
+            const file =
+
+                fileInput.files[0]
+
+            const formData =
+
+                new FormData()
+
+            formData.append(
+                "file",
+                file
+            )
+
+            const response = await fetch(
+
+                "http://127.0.0.1:8000/predict",
+
+                {
+
+                    method: "POST",
+
+                    body: formData
+
+                }
+
+            )
+
+            const data = await response.json()
+
+            // ==================================
+            // SHOW ORIGINAL IMAGE
+            // ==================================
+
+            document.getElementById(
+                "original"
+            ).src =
+
+                "data:image/png;base64," +
+                data.original_image
+
+            // ==================================
+            // SHOW PREPROCESSED IMAGE
+            // ==================================
+
+            document.getElementById(
+                "processed"
+            ).src =
+
+                "data:image/png;base64," +
+                data.preprocessed_image
+
+            // ==================================
+            // SHOW SEGMENTED IMAGE
+            // ==================================
+
+            document.getElementById(
+                "segmented"
+            ).src =
+
+                "data:image/png;base64," +
+                data.segmentation_image
+
+            // ==================================
+            // SHOW DOWNLOAD BUTTON
+            // ==================================
+
+            document.getElementById(
+                "downloadBtn"
+            ).style.display = "inline"
+
+        }
+
+    </script>
+
+</body>
+
+</html>
